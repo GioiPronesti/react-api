@@ -29,6 +29,7 @@ il nostro server express non è in grado di gestire le richieste che arrivano da
   }
 
   export const API_BASE_URI= "http://localhost:3000/"
+
 export default function Main() {
 
   // dichiaro le mie variabili di stato, reattive 
@@ -48,7 +49,7 @@ export default function Main() {
 
     axios.get(`${API_BASE_URI}posts`,{
     params: {
-      limit:4
+      limit:6
     },
     })
     .then(res => {
@@ -60,17 +61,50 @@ export default function Main() {
     })
   }
 
+  // fetching dei dati al server solo all'avvio della applicazione
   useEffect(() => {
     fetchPosts()
   },[])
 
+  function handleFormData(e){
+
+      // ottengo i valori delle chiavi e loro rispettivi valori
+      //const key = e.target.name
+      //const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
+
+      const { name, value, type, checked } = e.target
+
+      // duplico l'oggetto,  che mi serve per aggiornare le proprietà di Initial Form Data e far reagire formData
+      
+      //const newFormData = {...formData}
+      //newFormData[key] = value
+      
+      // aggiorno la mia variabile di stato
+
+      setFormData({
+        ...formData,
+        [name]: type === 'checkbox' ? checked : value
+      })
+
+  }
+
+  function deletePost(id) {
+
+    axios.delete(`${API_BASE_URI}posts/${id}`)
+    .then(() => {
+      //setPublishedPosts(publishedPosts.filter(post => post.id !== id ))
+      fetchPosts()
+    })
+    .catch(err => {
+      console.error(err)
+      alert('Non è stato possibile eliminare il post selezionato.')
+    })
+  }
 
 
   useEffect(() => {
    setPublishedPosts(posts.filter((post) => post.published === true ))
 
-
-  
    const tagsItems = []
 
      posts.forEach(post => {
@@ -90,62 +124,35 @@ export default function Main() {
 
   },[posts])
   
-
+  // AGGIUNGI UN NUOVO POST POST
   function addPost(e) {
     e.preventDefault()
 
     //const newTitle = title.trim()
     //if(formData.title.trim() === '') return
 
-    const post = {
-      id: Date.now(),
+    const newPost = {
+      //id: Date.now(),
       ...formData,
-      
-    //  image: undefined /* compila questo campo */,
-     // content:
-     //   'Lorem ipsum dolor sit amet consectetur adipisicing elit. Velit animi unde quasi enim non esse ratione voluptas voluptate, officiis veritatis magni blanditiis possimus nobis cum id inventore corporis deserunt hic.',
       tags: formData.tags.split(',').map((tag) => tag.trim())
-     // published: true,
     }
 
-    setPosts([...posts,post])
-    setFormData(initialFormData) // resetto il form
-    //setTitle('')
-     
-  }
-
-  function deletePost(id) {
-
-    setPublishedPosts(publishedPosts.filter(post => post.id !== id ))
-
-  }
-
-  function handleFormData(e){
-
-    // ottengo i valori delle chiavi e loro rispettivi valori
-    //const key = e.target.name
-    //const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
-
-    const { name, value, type, checked } = e.target
-
-    // duplico l'oggetto,  che mi serve per aggiornare le proprietà di Initial Form Data e far reagire formData
-    
-    //const newFormData = {...formData}
-    //newFormData[key] = value
-    
-    // aggiorno la mia variabile di stato
-
-    setFormData({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
+    axios.post(`${API_BASE_URI}posts`,newPost)
+    .then(res => {
+      console.log(res)
+      setPosts([...posts,res.data])
+      setFormData(initialFormData)
+    })
+    .catch(err => {
+      alert(err.response.data.message.join(" "))
+      console.error(err)
     })
 
+    //setPosts([...posts,post])
+    //setFormData(initialFormData) // resetto il form
+   
+     
   }
-    
-
-
-
-  // console.log('tags',tags)
 
   return (
     <main>

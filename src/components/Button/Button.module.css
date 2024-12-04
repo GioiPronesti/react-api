@@ -1,8 +1,21 @@
 .button {
-	background-color: gold;
-	color: white;
+	border: none;
+	display: inline-block;
+	white-space: nowrap;
 	line-height: 2rem;
+	font-size: 0.75rem;
 	padding: 0 1rem;
-	text-align: center;
 	border-radius: 0.5rem;
+	cursor: pointer;
+	text-transform: uppercase;
+}
+
+.light_button {
+	background-color: mediumslateblue;
+	color: white;
+}
+
+.dark_button {
+	background-color: white;
+	color: mediumslateblue;
 }
