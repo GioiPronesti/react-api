@@ -1,13 +1,23 @@
 import PostCard from '../PostCard/PostCard'
 import style from './Main.module.css'
-import { starterPosts } from '../../posts.js'
+//import { starterPosts } from '../../posts.js'
 import Tags from '../tags/Tags.jsx'
 import {  useEffect, useState } from 'react'
 import Button from '../Button/Button.jsx'
+import axios from 'axios'
+
 
 /*Ampliare l’esercizio precedente aggiungendo, nel form, i campi per immagine, contenuto, categoria (select), tags (lista di checkbox) e uno stato per pubblicare o meno l’articolo. Utilizzare un unico oggetto per gestire tutti i dati del form.
 BONUS:
 Aggiungere uno useEffect che mostri un alert quando l’utente clicca sull’apposita checkbox per pubblicare un articolo.*/ 
+
+/*integriamo le API che abbiamo sviluppato durante il modulo su ExpressJS.
+Al caricamento dell’applicazione, sfruttando l’hook useEffect, recuperiamo la lista dei post dal backend e la mostriamo nella tabella.
+Durante il submit del form, assicuriamoci che questi dati vengano inviati al backend e correttamente salvati.
+ATTENZIONE
+il nostro server express non è in grado di gestire le richieste che arrivano da un origine diversa. Per farlo bisogna abilitare le CORS sulle rotte. installata la libreria cors con npm e aggiungete il middleware come visto in classe e come è indicato in documentazione.
+*/
+
 
  const initialFormData = {
     title: "",
@@ -18,6 +28,7 @@ Aggiungere uno useEffect che mostri un alert quando l’utente clicca sull’app
     published: true
   }
 
+  export const API_BASE_URI= "http://localhost:3000/"
 export default function Main() {
 
   // dichiaro le mie variabili di stato, reattive 
