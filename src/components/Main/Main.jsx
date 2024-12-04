@@ -32,12 +32,39 @@ il nostro server express non è in grado di gestire le richieste che arrivano da
 export default function Main() {
 
   // dichiaro le mie variabili di stato, reattive 
-  const [posts,setPosts] = useState(starterPosts)             // post
+  const [posts,setPosts] = useState([])             // post
   const [publishedPosts, setPublishedPosts ] = useState([])   // published post
   const [tags,setTags] = useState([])                         // tags 
 
   // variabile di stato, formData variabile reattiva
   const [formData,setFormData] = useState(initialFormData)
+
+  useEffect(() => {
+    console.log(`Stai creando un post ${formData.published ? 'pubblico' : 'non pubblico'}`) 
+  },[formData.published])
+  //const [title,setTitle] = useState('')
+
+  function fetchPosts(){
+
+    axios.get(`${API_BASE_URI}posts`,{
+    params: {
+      limit:4
+    },
+    })
+    .then(res => {
+      console.log("posts res", res)
+      setPosts(res.data)
+    })
+    .catch(err => {
+      console.error(err)
+    })
+  }
+
+  useEffect(() => {
+    fetchPosts()
+  },[])
+
+
 
   useEffect(() => {
    setPublishedPosts(posts.filter((post) => post.published === true ))
@@ -63,11 +90,6 @@ export default function Main() {
 
   },[posts])
   
-
-  useEffect(() => {
-    console.log(`Stai creando un post ${formData.published ? 'pubblico' : 'non pubblico'}`) 
-  },[formData.published])
-  //const [title,setTitle] = useState('')
 
   function addPost(e) {
     e.preventDefault()
